@@ -1,0 +1,124 @@
+<h2 class="f-w-500 m-b-24" mat-dialog-title><strong>Objetivo {{local_data_objective.codigoindicador}}</strong></h2>
+
+<mat-dialog-content style="max-width: 600px">
+
+    <form #userForm="ngForm">
+        <div class="row">
+
+            <div class="col-lg-6">
+                <mat-label>
+                    Objetivo Actual
+                </mat-label>
+                <mat-form-field appearance="outline" class="w-100">
+                    <input disabled type="text" matInput required id="meta" name="meta" maxlength="3"
+                        [(ngModel)]="local_data_objective.meta" autocomplete="off" />
+                    <mat-icon *ngIf="(local_data_objective.operacion =='División' || local_data_objective.operacion =='División - 1')&&!local_data_objective.isAverage;" matPrefix>
+                        <i-tabler  name="percentage" class="icon-20 d-flex"></i-tabler>
+                    </mat-icon>
+                    <mat-icon *ngIf="(local_data_objective.operacion !== 'División' && local_data_objective.operacion !== 'División - 1') || local_data_objective.isAverage" matPrefix>
+                        <i-tabler name="pennant" class="icon-20 d-flex"></i-tabler>
+                    </mat-icon>
+                </mat-form-field>
+
+
+            </div>
+            <div class="col-lg-6">
+                <mat-label>{{'admin.principles.validfrom' | translate}}</mat-label>
+                <mat-form-field appearance="outline" class="w-100">
+                    <input disabled matInput [matDatepicker]="picker"
+                        [(ngModel)]="local_data_objective.objetivo_validezinicio" name="validezfin" />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <mat-label>
+                    Objetivo Nuevo
+                </mat-label>
+
+                <div *ngIf="local_data_objective.operacion =='División' || local_data_objective.operacion =='División - 1' || local_data_objective.operacion =='Igual';  else notDivision">
+
+
+                    <mat-form-field *ngIf="(local_data_objective.operacion =='División' || local_data_objective.operacion =='División - 1')&&!local_data_objective.isAverage;"  appearance="outline" class="w-100">
+                        <input type="text" matInput (input)="onInputValueAim($event)"  pattern="^(\d{1,2}(\.\d{1,2})?|100)$"  required
+                            [(ngModel)]="local_data_objective.objetivo" id="objetivo" name="objetivo" 
+                            autocomplete="off" placeholder="Ingresar porcentaje"
+                            [disabled]="!local_data_objective.aplica" />
+                        <mat-icon  matPrefix>
+                            <i-tabler name="percentage" class="icon-20 d-flex"></i-tabler>
+                        </mat-icon>
+                                            
+                    </mat-form-field>
+
+                    <mat-form-field *ngIf="local_data_objective.operacion == 'Igual' || local_data_objective.isAverage" appearance="outline" class="w-100">
+                        <input type="text" matInput (input)="onInputValueAim($event)"  required
+                            [(ngModel)]="local_data_objective.objetivo" id="objetivo" name="objetivo" 
+                            autocomplete="off" placeholder="Ingresar valor"
+                            [disabled]="!local_data_objective.aplica" />
+                      
+                        <mat-icon  matPrefix>
+                            <i-tabler name="pennant" class="icon-20 d-flex"></i-tabler>
+                        </mat-icon>
+                        
+                    </mat-form-field>
+                </div>
+                <ng-template #notDivision>
+
+                    <mat-form-field appearance="outline" class="hide-hint" [style]="{'width': '100%'}">
+                        <mat-select [(ngModel)]="local_data_objective.objetivo" id="objetivo" name="objetivo"
+                            placeholder="Seleccione una meta">
+                            
+                            <mat-option value="Si">Si</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-template>
+
+            </div>
+            <div class="col-lg-6">
+                <mat-label>{{'admin.principles.validdate' | translate}}</mat-label>
+                <mat-form-field appearance="outline" class="w-100">
+                    <input disabled matInput [matDatepicker]="picker2" [(ngModel)]="local_data_objective.validezinicio"
+                        name="validezinicio" />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="d-flex col-lg-12   p-l-0 ">
+                <div class="col-lg-6" *ngIf="local_data_objective.operacion =='División' || local_data_objective.operacion =='División - 1' || local_data_objective.operacion =='Igual'">
+                    Cumplimiento
+                    <br>
+                    <mat-form-field appearance="outline" class="hide-hint" [style]="{'width': '100%'}">
+                        <!-- <mat-label>Seleccionar comparación</mat-label> -->
+                        <mat-select required (selectionChange)="toggleChangedSetGoal()" name="setgoal" id="setgoal" [disabled]="!local_data_objective.aplica" [(ngModel)]="toogleGoal" placeholder="Seleccionar comparación">
+                            <mat-option value="greater_than">Mayor que Objetivo</mat-option>
+                            <mat-option value="equal_greater_than">Mayor o igual que Objetivo</mat-option>
+                            <mat-option value="equal">Igual a Objetivo</mat-option>
+                            <mat-option value="equal_less_than">Menor o igual que Objetivo</mat-option>
+                            <mat-option value="less_than">Menor que Objetivo</mat-option>
+                            <!-- <mat-option value="default">Por defecto</mat-option> -->
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                
+               
+            </div>
+            <div class="col-lg-6 m-b-16">
+         
+                <mat-slide-toggle id="aplica" name="aplica"  (change)="toggleChanged()" [(ngModel)]="local_data_objective.aplica">{{
+                    local_data_objective.aplica ?
+                    'Aplica' : 'No Aplica' }}</mat-slide-toggle>
+            </div>
+        </div>
+        <button mat-flat-button (click)="doAction()" mat-flat-button color="primary" [disabled]="!userForm.valid || !local_data_objective.objetivo">
+            Guardar
+        </button>
+        <button mat-stroked-button color="warn" class="m-l-8" (click)="closeDialog()">
+            Cancel
+        </button>
+    </form>
+
+</mat-dialog-content>

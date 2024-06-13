@@ -1,0 +1,223 @@
+<div class="loading-overlay" *ngIf="loading">
+    <div class="loading-indicator">
+        <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+        <p>Cargando...</p>
+    </div>
+</div>
+<mat-card class="cardWithShadow">
+    <mat-card-header class="d-flex">
+        <div class="m-r-auto">
+            <mat-card-title>Resultados</mat-card-title>
+            <mat-card-subtitle class="mat-body-1"></mat-card-subtitle>
+        </div>
+        <div class="d-flex">
+            <button mat-stroked-button color="warn" class="w-100 btn-block m-r-16" (click)="backPrinciple()">
+                Regresar
+            </button>
+            <div class="d-flex"
+                *ngIf="(local_data.operacion == 'División' || local_data.operacion == 'División - 1') && !is_average ">
+                <button (click)="changePlot(1)" mat-stroked-button color="primary"
+                    [ngClass]="{'bg-primary text-light-primary': plot_type === 1}" class="w-100 btn-block m-r-6">
+                    <div class="d-flex align-items-center gap-4">
+                        Dona
+                        <i-tabler *ngIf="plot_type===1" name="check" class="icon-20"></i-tabler>
+                    </div>
+                </button>
+
+                <button (click)="changePlot(2)" mat-stroked-button color="primary"
+                    [ngClass]="{'bg-primary text-light-primary': plot_type === 2}" class="w-100 btn-block m-r-6">
+                    <div class="d-flex align-items-center gap-4 ">
+                        Pastel
+                        <i-tabler *ngIf="plot_type===2" name="check" class="icon-20"></i-tabler>
+                    </div>
+                </button>
+                <button (click)="changePlot(3)" mat-stroked-button color="primary"
+                    [ngClass]="{'bg-primary text-light-primary': plot_type === 3}" class="w-100 btn-block m-r-6 p-x-24">
+                    <div class="d-flex align-items-center gap-4">
+                        Columna
+                        <i-tabler *ngIf="plot_type===3" name="check" class="icon-20"></i-tabler>
+                    </div>
+                </button>
+                <button (click)="changePlot(4)" mat-stroked-button color="primary"
+                    [ngClass]="{'bg-primary text-light-primary': plot_type === 4}" class="w-100 btn-block m-r-6 p-x-24">
+                    <div class="d-flex align-items-center gap-4">
+                        Radialbar
+                        <i-tabler *ngIf="plot_type===4" name="check" class="icon-20"></i-tabler>
+                    </div>
+                </button>
+                <button (click)="changePlot(5)" mat-stroked-button color="primary"
+                    [ngClass]="{'bg-primary text-light-primary': plot_type === 5}" class="w-100 btn-block ">
+                    <div class="d-flex align-items-center gap-4">
+                        Barra
+                        <i-tabler *ngIf="plot_type===5" name="check" class="icon-20"></i-tabler>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+
+    </mat-card-content>
+</mat-card>
+
+<h2>{{local_data && local_data.codigoindicador && local_data.descripcionindicador ? local_data.codigoindicador + ' - ' + local_data.descripcionindicador : ''}}</h2>
+
+<div class="row"
+    *ngIf="(local_data.operacion === 'División' || local_data.operacion === 'División - 1') && !is_average ">
+    <div class="col-lg-3 col-sm-4 col-6" *ngFor="let topcard of topcards">
+        <mat-card class="shadow-none text-center bg-light-{{ topcard.color }}  shadow-none">
+            <mat-card-content class="p-16">
+                <img [src]="topcard.img" alt="users" width="40" class="rounded-circle" />
+                <h4 class="mat-subtitle-2 f-w-600 text-{{ topcard.color }} m-t-8">
+                    {{ topcard.title }}
+                </h4>
+                <h6 class="m-t-4 mat-subtitle-1 f-w-600 text-{{ topcard.color }} m-t-8">
+                    {{ topcard.subtitle }}
+                </h6>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12"
+        *ngIf="(local_data.operacion == 'División' || local_data.operacion == 'División - 1') && !is_average ">
+
+        <div class="row ">
+            <div class="col-lg-6" *ngIf="plot_type===1">
+                <mat-card class="cardWithShadow theme-card  mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex align-items-center justify-content-between">
+
+                        <mat-card-title class="m-b-0">Dona</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Seleccione una gráfica para incluirla en el informe final
+                            de Balance Social.</mat-card-subtitle>
+
+                        <!-- <mat-checkbox  (change)="setCheck(1)" [checked]="selectedOption === 1"   title="Seleccione para enviar gráfico al reporte" color="primary"></mat-checkbox> -->
+                        <!-- <mat-radio-button value="after" color="primary" ></mat-radio-button -->
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1 chart-container">
+                        <div #donaChartComponent>
+                            <apx-chart [series]="doughnutChartOptions.series" [chart]="doughnutChartOptions.chart"
+                                [labels]="doughnutChartOptions.labels" [dataLabels]="doughnutChartOptions.dataLabels"
+                                [plotOptions]="doughnutChartOptions.plotOptions" [legend]="doughnutChartOptions.legend"
+                                [colors]="doughnutChartOptions.colors" [tooltip]="doughnutChartOptions.tooltip">
+                            </apx-chart>
+                        </div>
+
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-lg-6" *ngIf="plot_type===2">
+                <mat-card class="cardWithShadow theme-card mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex justify-content-between align-items-center">
+                        <mat-card-title class="m-b-0">Pastel</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Seleccione una gráfica para incluirla en el informe final
+                            de Balance Social.</mat-card-subtitle>
+
+                        <!-- <mat-checkbox (change)="setCheck(2)" [checked]="selectedOption === 2"  title="Seleccione para enviar gráfico al reporte" color="primary"></mat-checkbox> -->
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1 chart-container">
+                        <div #pieChartComponent>
+                            <apx-chart [series]="pieChartOptions.series" [chart]="pieChartOptions.chart"
+                                [dataLabels]="pieChartOptions.dataLabels" [labels]="pieChartOptions.labels"
+                                [plotOptions]="pieChartOptions.plotOptions" [legend]="pieChartOptions.legend"
+                                [colors]="pieChartOptions.colors" [tooltip]="pieChartOptions.tooltip">
+                            </apx-chart>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-lg-6" *ngIf="plot_type===3">
+                <mat-card class="cardWithShadow theme-card mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex justify-content-between align-items-center">
+                        <mat-card-title class="m-b-0">Columna</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Seleccione una gráfica para incluirla en el informe final
+                            de Balance Social.</mat-card-subtitle>
+
+                        <!-- <mat-checkbox (change)="setCheck(3)" [checked]="selectedOption === 3"   title="Seleccione para enviar gráfico al reporte" color="primary"></mat-checkbox> -->
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1 chart-container p-t-0">
+                        <div #columnChartComponent>
+                            <apx-chart [series]="columnChartOptions.series" [chart]="columnChartOptions.chart"
+                                [xaxis]="columnChartOptions.xaxis" [yaxis]="columnChartOptions.yaxis"
+                                [grid]="columnChartOptions.grid" [stroke]="columnChartOptions.stroke"
+                                [tooltip]="columnChartOptions.tooltip" [plotOptions]="columnChartOptions.plotOptions"
+                                [dataLabels]="columnChartOptions.dataLabels" [legend]="columnChartOptions.legend"
+                                [colors]="columnChartOptions.colors" [markers]="columnChartOptions.markers">
+                            </apx-chart>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-lg-6" *ngIf="plot_type===4">
+                <mat-card class="cardWithShadow theme-card mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex justify-content-between align-items-center">
+                        <mat-card-title class="m-b-0">Barra Radial</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Seleccione una gráfica para incluirla en el informe final
+                            de Balance Social.</mat-card-subtitle>
+
+                        <!-- <mat-checkbox (change)="setCheck(4)" [checked]="selectedOption === 4"   title="Seleccione para enviar gráfico al reporte" color="primary"></mat-checkbox> -->
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1 chart-container p-t-0">
+                        <div #radialChartComponent>
+                            <apx-chart [series]="radialbarChartOptions.series" [chart]="radialbarChartOptions.chart"
+                                [dataLabels]="radialbarChartOptions.dataLabels" [labels]="radialbarChartOptions.labels"
+                                [plotOptions]="radialbarChartOptions.plotOptions" 
+                                [legend]="radialbarChartOptions.legend" [colors]="radialbarChartOptions.colors"
+                                [tooltip]="radialbarChartOptions.tooltip">
+                            </apx-chart>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-lg-6" *ngIf="plot_type===5">
+                <mat-card class="cardWithShadow theme-card mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex justify-content-between align-items-center">
+                        <mat-card-title class="m-b-0">Bar</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Seleccione una gráfica para incluirla en el informe final
+                            de Balance Social.</mat-card-subtitle>
+
+                        <!-- <mat-checkbox (change)="setCheck(5)" [checked]="selectedOption === 5"   title="Seleccione para enviar gráfico al reporte" color="primary"></mat-checkbox> -->
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1 chart-container p-t-0">
+                        <div #barChartComponent>
+                            <apx-chart [series]="barChartOptions.series" [chart]="barChartOptions.chart" [legend]="barChartOptions.legend"
+                                [dataLabels]="barChartOptions.dataLabels" [plotOptions]="barChartOptions.plotOptions"
+                                [yaxis]="barChartOptions.yaxis" [xaxis]="barChartOptions.xaxis"  [colors]="barChartOptions.colors"
+                                [fill]="barChartOptions.fill" [title]="barChartOptions.title"></apx-chart>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-lg-6">
+                <mat-card class="cardWithShadow theme-card mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex justify-content-between align-items-center">
+                        <mat-card-title class="m-b-0">Comentarios</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Observaciones que se agregarán al informe final de Balance
+                            Social.</mat-card-subtitle>
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1">
+                        <mat-form-field appearance="outline" [style]="{'width': '100%'}">
+                            <textarea [disabled]="loading2" rows="12" matInput [(ngModel)]="local_data.commentario"
+                                name="commentario" placeholder=""></textarea>
+                            <!-- <mat-hint align="end">{{comment.length}}/300</mat-hint> -->
+                        </mat-form-field>
+                        <button mat-flat-button [disabled]="loading2" color="primary" (click)="downloadChartAsFile()">
+                            Guardar
+                        </button>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+
+    </div>
+
+    <mat-card></mat-card>
+</div>

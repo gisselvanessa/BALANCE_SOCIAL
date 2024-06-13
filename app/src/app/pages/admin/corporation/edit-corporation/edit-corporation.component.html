@@ -1,0 +1,187 @@
+<div class="loading-overlay" *ngIf="loading">
+    <div class="loading-indicator">
+      <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+      <p>Cargando...</p>
+    </div>
+  </div>
+  
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+
+    <form #userForm="ngForm" >
+      <div class="row justify-content-between m-b-24">
+        <div class="col-sm-4 d-flex align-items-center">
+          <h4 class="mat-subtitle-2 f-s-18 f-w-600">#{{local_data.idcorporacion}}</h4>
+          <span style="margin-left: 1rem;" class="rounded f-w-600 p-6 p-y-4 f-s-12" [ngClass]="local_data.status ? 'bg-light-primary text-primary' : 'bg-light-error text-error'">
+            {{ local_data.status ? 'Activo' : 'Inactivo' }} <!--| date : "fullDate"-->
+          </span>
+        </div>
+        <div class="col-sm-4 text-right">
+          <a
+            routerLink="/admin/corporation"
+            mat-stroked-button
+            color="warn"
+            class="m-r-10"
+          >
+            Cancel
+          </a>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="updateDetail()"
+            [disabled]="!userForm.valid"
+          >
+            {{'admin.corporation.Save'|translate}}
+          </button>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+
+      <div class="row m-y-24 p-t-24">
+
+
+        <div class="col-sm-6" >
+         
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.country/city'| translate}}</mat-label>
+
+            <input placeholder="{{'admin.corporation.country/city' | translate}}" type="text" matInput id="fkidgeografia" name="fkidgeografia" [formControl]="countryControl" [matAutocomplete]="auto"  [value]="selectedCountryName" autocomplete="off">
+            <mat-icon matPrefix>
+              <i-tabler name="2fa" class="icon-20 d-flex"></i-tabler>
+            </mat-icon>
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-optgroup *ngFor="let group of filteredGeography | async" [label]="group.group">
+                <ng-container *ngFor="let country of group.countries">
+                  <mat-option [value]="country.idgeografia" (onSelectionChange)="selectOption(country)">
+                    {{ country.nombre }}
+                  </mat-option>
+                </ng-container>
+              </mat-optgroup>
+            </mat-autocomplete>
+          </mat-form-field>
+       
+        </div>
+
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fecha de creación de Corporación</mat-label>
+            <input matInput [matDatepicker]="picker" [formControl]="dateControl" [(ngModel)]="local_data.fechacreacion" name="fechacreacion"  />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker ></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+
+        
+        <div class="col-sm-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.name' | translate}}</mat-label>
+            <input #nameInput="ngModel"
+              matInput required
+              placeholder="{{'admin.corporation.name' | translate}}"
+              name="nombrecorporacion"
+              [(ngModel)]="local_data.nombrecorporacion"
+            />
+            <mat-error *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)">
+              <span *ngIf="nameInput.errors && nameInput.errors['required']">
+                El nombre es obligatorio.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+
+
+        <div class="col-sm-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.dni' | translate}}</mat-label>
+            <input
+            maxlength="14"
+              matInput required (input)="onInputValue($event)"
+              placeholder="{{'admin.corporation.dni' | translate}}"
+              name="ruc"  #nameInput2="ngModel"
+              [(ngModel)]="local_data.ruc"
+            />
+            <mat-error *ngIf="nameInput2.invalid && (nameInput2.dirty || nameInput2.touched)">
+              <span *ngIf="nameInput2.errors && nameInput2.errors['required']">
+                El representante legal es obligatorio.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.phone' | translate}}</mat-label>
+            <input maxlength="10"
+              matInput (input)="onInputValue($event)"
+              placeholder="{{'admin.corporation.phone' | translate}}"
+              name="telefonocorporacion"
+              [(ngModel)]="local_data.telefonocorporacion"
+            />
+          </mat-form-field>
+        </div>
+
+
+       
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.legal_representative' | translate}}</mat-label>
+            <input
+              matInput required  #nameInput3="ngModel"
+              placeholder="{{'admin.corporation.legal_representative' | translate}}"
+              name="representantelegal"
+              [(ngModel)]="local_data.representantelegal"
+            />
+            <mat-error *ngIf="nameInput3.invalid && (nameInput3.dirty || nameInput3.touched)">
+              <span *ngIf="nameInput3.errors && nameInput3.errors['required']">
+                La identificación es obligatoria.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.address' | translate}}</mat-label>
+            <input
+              matInput
+              placeholder="{{'admin.corporation.address' | translate}}"
+              name="direccioncorporacion"
+              [(ngModel)]="local_data.direccioncorporacion"
+            />
+          </mat-form-field>
+        </div>
+
+        
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.corporation.description' | translate}}</mat-label>
+            <input
+              matInput
+              placeholder="{{'admin.corporation.description' | translate}}"
+              name="descripcioncorporacion"
+              [(ngModel)]="local_data.descripcioncorporacion"
+            />
+          </mat-form-field>
+        </div>
+        
+
+        
+      </div>
+
+      <div class="col-lg-12 m-l-8">
+        <mat-slide-toggle id="status" name="status" [(ngModel)]="local_data.status">{{ local_data.status ? 'Activado' : 'Desactivado' }}</mat-slide-toggle>
+    </div>
+    <br>
+
+    </form>
+</mat-card-content>
+</mat-card>

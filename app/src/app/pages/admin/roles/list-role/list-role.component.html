@@ -1,0 +1,209 @@
+<div class="loading-overlay" *ngIf="loading">
+    <div class="loading-indicator">
+      <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+      <p>Cargando...</p>
+    </div>
+  </div>
+  <div class="row">
+  
+  <div class="col-sm-4">
+    <form>
+  
+        <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ 'admin.branch.Corporation' | translate }}</mat-label>
+            <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                [formControl]="corporationControl" [matAutocomplete]="autoCorporation"
+                [value]="selectedCorporationName" autocomplete="off"  />
+            <mat-icon matPrefix>
+                <i-tabler name="building-skyscraper" class="icon-20 d-flex"></i-tabler>
+            </mat-icon>
+            <mat-autocomplete #autoCorporation="matAutocomplete" (optionSelected)="resetAutocompleteCorporation()">
+                <mat-option *ngFor="let corporation of filteredOptionsCorporation | async"
+                    [value]="corporation.idcorporacion"
+                    (onSelectionChange)="selectOptionCorporation(corporation)">
+                    {{ corporation.nombrecorporacion }} <!-- Muestra el nombre de la corporación -->
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+  
+    </form>
+  </div>
+  <div class="col-sm-4">
+    <form>
+  
+        <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ 'admin.department.branch' | translate }}</mat-label>
+            <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                [formControl]="branchControl" [matAutocomplete]="autoBranch"
+                [value]="selectedBranchName" autocomplete="off"
+                 />
+            <mat-icon matPrefix>
+                <i-tabler name="building-community" class="icon-20 d-flex"></i-tabler>
+            </mat-icon>
+            <mat-autocomplete #autoBranch="matAutocomplete" (optionSelected)="resetAutocompleteBranch()">
+                <mat-option *ngFor="let branch of filteredOptionsBranch | async"
+                    [value]="branch.idsucursal" (onSelectionChange)="selectOptionBranch(branch)">
+                    {{ branch.nombresucursal }} <!-- Muestra el nombre de la corporación -->
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+  </div>
+  
+  <div class="col-sm-4">
+    <form>
+  
+        <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ 'admin.department.Department' | translate }}</mat-label>
+            <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                [formControl]="departmentControl" [matAutocomplete]="autoDepartment"
+               [value]="selectedDepartmentName" autocomplete="off"
+                 />
+            <mat-icon matPrefix>
+                <i-tabler name="building" class="icon-20 d-flex"></i-tabler>
+            </mat-icon>
+            <mat-autocomplete #autoDepartment="matAutocomplete">
+                <mat-option *ngFor="let department of filteredOptionsDepartment | async"
+                    [value]="department.iddepartamento" (onSelectionChange)="selectOptionDepartment(department)">
+                    {{ department.nombredepartamento }} <!-- Muestra el nombre de la corporación -->
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-4">
+      <mat-card class="cardWithShadow">
+        <mat-card-header class="d-flex">
+          <div class="m-r-auto">
+            <mat-card-title class="m-b-0">Roles</mat-card-title>
+            <mat-card-subtitle class="mat-body-1">Seleccione un rol para ver las opciones</mat-card-subtitle>
+          </div>
+        </mat-card-header>
+  
+        <mat-card-content>
+            <div class="p-16 p-b-0">
+              <button mat-flat-button (click)="openDialogCreate()" color="primary" class="w-100 btn-block">
+                Nuevo Rol
+              </button>
+            </div>
+            <div class="p-16">
+              <div *ngFor="let data of dataRole" >
+                <div class="row justify-content-between  align-items-center">
+                  
+
+                  <div [class.bg-light-primary]="data.active" (click)="roleSelect(data)" class="d-flex align-items-center  rounded inbox-list p-16 cursor-pointer">
+                    <span class="m-r-12">
+                      <span class="rounded-pill p-x-8 f-w-600 text-white f-s-12 p-y-4" [ngClass]="data.status ? 'bg-success' : 'bg-error text-error'">
+                        {{data.status ? 'Activo' : 'Inactivo'}}
+                      </span>
+                    </span>
+                    <span class="f-w-400 f-s-14" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 170px;">{{ data.nombrerol }}</span>
+                    
+                  </div>
+                  <div>
+                    <a (click)="viewPage(data.idrol)"  class="m-r-10 cursor-pointer">
+                      <i-tabler name="eye" class="icon-18"></i-tabler>
+                    </a>
+                    <a (click)="editPage(data.idrol)" class="m-r-10 cursor-pointer">
+                      <i-tabler name="edit" class="icon-18"></i-tabler>
+                    </a>
+                    <a (click)="openDialogDelete('Delete', data)" class="m-r-10 cursor-pointer">
+                      <i-tabler name="trash" class="icon-18"></i-tabler>
+                    </a>
+                  </div>
+                  
+                </div>
+                
+              </div>
+            </div>
+            
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-lg-8">
+      <mat-card class="cardWithShadow">
+        <mat-card-header class="d-flex">
+          <div class="m-r-auto">
+            <mat-card-title>Paginas Otorgadas</mat-card-title>
+            <mat-card-subtitle class="mat-body-1">{{dataGrant.length > 0 ? 'Paginas a las que tiene acceso el rol seleccionado' : 'Sin Datos'}}</mat-card-subtitle>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-responsive m-t-30">
+            <mat-table *ngIf="dataGrant.length > 0" #table [dataSource]="dataGrant" style="max-height: 500px; overflow: auto">
+              
+              <!-- description Column -->
+              <ng-container matColumnDef="description">
+                <mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                  Pagina
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="mat-body-1">
+                  {{ element.descripcionpagina }}
+                </mat-cell>
+              </ng-container>
+      
+              <!-- id_page Column -->
+              <ng-container matColumnDef="status">
+                <mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                  Estado
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="mat-body-1">
+                  <div class="d-flex flex-sm-row flex-column align-items-center justify-content-center gap-8">
+                    <button mat-flat-button color="accent" disabled>Otorgar</button>
+                    <button mat-flat-button color="warn" (click)="denyPage(element)">Denegar</button>
+                  </div>
+                </mat-cell>
+              </ng-container>
+      
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+  
+      <mat-card class="cardWithShadow">
+        <mat-card-header class="d-flex">
+          <div class="m-r-auto">
+            <mat-card-title>Paginas Denegadas</mat-card-title>
+            <mat-card-subtitle class="mat-body-1">{{dataDeny.length > 0 ? 'Paginas a las que NO tiene accceso' : 'Sin Datos'}}</mat-card-subtitle>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-responsive m-t-30">
+            <mat-table *ngIf="dataDeny.length > 0" #table [dataSource]="dataDeny" style="max-height: 500px; overflow: auto">
+              
+              <!-- description Column -->
+              <ng-container matColumnDef="description">
+                <mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                  Pagina
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="mat-body-1">
+                  {{ element.descripcionpagina }}
+                </mat-cell>
+              </ng-container>
+      
+              <!-- id_page Column -->
+              <ng-container matColumnDef="status">
+                <mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                  Estado
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="mat-body-1">
+                  <div class="d-flex flex-sm-row flex-column align-items-center justify-content-center gap-8">
+                    <button mat-flat-button color="accent" (click)="grantPage(element)">Otorgar</button>
+                    <button mat-flat-button color="warn" disabled>Denegar</button>
+                  </div>
+                </mat-cell>
+              </ng-container>
+      
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  

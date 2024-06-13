@@ -1,0 +1,158 @@
+<div class="loading-overlay" *ngIf="loading">
+  <div class="loading-indicator">
+    <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+    <p>Cargando...</p>
+  </div>
+</div>
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+
+    <form #userForm="ngForm">
+      <div class="row justify-content-between m-b-24">
+        <div class="col-sm-4 d-flex align-items-center">
+          <h4 class="mat-subtitle-2 f-s-18 f-w-600">#{{local_data.idsucursal}}</h4>
+          <span style="margin-left: 1rem;" class="rounded f-w-600 p-6 p-y-4 f-s-12"
+            [ngClass]="local_data.status ? 'bg-light-primary text-primary' : 'bg-light-error text-error'">
+            {{ local_data.status ? 'Activo' : 'Inactivo' }} <!--| date : "fullDate"-->
+          </span>
+        </div>
+        <div class="col-sm-4 text-right">
+          <a routerLink="/admin/branch" mat-stroked-button color="warn" class="m-r-10">
+            Cancel
+          </a>
+          <button mat-raised-button color="primary" (click)="updateDetail()"
+            [disabled]="!userForm.valid || !corporationControl.valid ">
+            {{'admin.branch.Save'|translate}}
+          </button>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="row m-y-24 p-t-24">
+
+
+
+
+        <div class="col-sm-6">
+
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>{{ 'admin.branch.Corporation' | translate }}</mat-label>
+            <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+              [formControl]="corporationControl" [matAutocomplete]="autoCorporation" [value]="selectedCorporationName"
+              autocomplete="off" required />
+            <mat-icon matPrefix>
+              <i-tabler name="building-skyscraper" class="icon-20 d-flex"></i-tabler>
+            </mat-icon>
+            <mat-autocomplete #autoCorporation="matAutocomplete">
+              <mat-option *ngFor="let corporation of filteredOptions | async" [value]="corporation.idcorporacion"
+                (onSelectionChange)="selectOptionCorporation(corporation)">
+                {{ corporation.nombrecorporacion }} <!-- Muestra el nombre de la corporación -->
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+        </div>
+        <div class="col-sm-6">
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.branch.country/city' | translate}}</mat-label>
+            <input type="text" required matInput id="fkidgeografia" name="fkidgeografia" [formControl]="countryControl"
+              [matAutocomplete]="auto" [value]="selectedCountryName" autocomplete="off">
+            <mat-icon matPrefix>
+              <i-tabler name="2fa" class="icon-20 d-flex"></i-tabler>
+            </mat-icon>
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-optgroup *ngFor="let group of filteredGeography | async" [label]="group.group">
+                <ng-container *ngFor="let country of group.countries">
+                  <mat-option [value]="country.idgeografia" (onSelectionChange)="selectOptionCountry(country)">
+                    {{ country.nombre }}
+                  </mat-option>
+                </ng-container>
+              </mat-optgroup>
+            </mat-autocomplete>
+          </mat-form-field>
+
+        </div>
+
+
+
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.branch.name' | translate}}</mat-label>
+            <input matInput required #nameInput="ngModel" placeholder="{{'admin.branch.name' | translate}}"
+              name="nombresucursal" [(ngModel)]="local_data.nombresucursal" />
+            <mat-error *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)">
+              <span *ngIf="nameInput.errors && nameInput.errors['required']">
+                El nombre de sucursal es obligatorio.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.branch.code' | translate}}</mat-label>
+            <input matInput maxlength="2" placeholder="{{'admin.branch.code' | translate}}" name="codigosucursal"
+              [(ngModel)]="local_data.codigosucursal" />
+            <mat-hint align="end">{{ local_data.codigosucursal.length }} / 2</mat-hint>
+
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.branch.phone' | translate}}</mat-label>
+            <input required #nameInput3="ngModel" maxlength="10" matInput (input)="onInputValue($event)"
+              placeholder="{{'admin.branch.phone' | translate}}" name="telefonosucursal"
+              [(ngModel)]="local_data.telefonosucursal" />
+            <mat-error *ngIf="nameInput3.invalid && (nameInput3.dirty || nameInput3.touched)">
+              <span *ngIf="nameInput3.errors && nameInput3.errors['required']">
+                El celular es obligatorio.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.branch.address' | translate}}</mat-label>
+            <input required #nameInput2="ngModel" matInput placeholder="{{'admin.branch.address' | translate}}"
+              name="direccionsucursal" [(ngModel)]="local_data.direccionsucursal" />
+            <mat-error *ngIf="nameInput2.invalid && (nameInput2.dirty || nameInput2.touched)">
+              <span *ngIf="nameInput2.errors && nameInput2.errors['required']">
+                La dirección de sucursal es obligatoria.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{'admin.branch.description' | translate}}</mat-label>
+            <input matInput placeholder="{{'admin.branch.description' | translate}}" name="descripcionsucursal"
+              [(ngModel)]="local_data.descripcionsucursal" />
+          </mat-form-field>
+        </div>
+
+
+
+
+
+
+
+
+
+
+      </div>
+
+      <div class="col-lg-12 m-l-8">
+        <mat-slide-toggle id="status" name="status" [(ngModel)]="local_data.status">{{ local_data.status ? 'Activado' :
+          'Desactivado' }}</mat-slide-toggle>
+      </div>
+      <br>
+
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,220 @@
+<div class="loading-overlay" *ngIf="loading">
+    <div class="loading-indicator">
+        <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+        <p>Cargando...</p>
+    </div>
+</div>
+<mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+        <form #userForm="ngForm">
+
+            <div class="row justify-content-between m-b-24">
+
+                <div class="col-sm-4 d-flex align-items-center">
+                    <h4 class="mat-subtitle-2 f-s-18 f-w-600">#{{local_data.idusuario}}</h4>
+                    <span style="margin-left: 1rem;" class="rounded f-w-600 p-6 p-y-4 f-s-12" [ngClass]="local_data.is_active ? 'bg-light-primary text-primary' : 'bg-light-error text-error'">
+                      {{ local_data.is_active ? 'Activo' : 'Inactivo' }} <!--| date : "fullDate"-->
+                    </span>
+                  </div>
+                <div class="col-sm-4 text-right">
+                    <a routerLink="/admin/person" mat-stroked-button color="warn" class="m-r-10">
+                        Cancel
+                    </a>
+                    <button mat-raised-button color="primary" (click)="updateDetail()" [disabled]="false">
+                        {{'admin.department.Save'|translate}}
+                    </button>
+                </div>
+
+
+            </div>
+            <mat-divider></mat-divider>
+
+            <div class="row m-y-24 p-t-24">
+
+                <div class="col-sm-3">
+
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>{{ 'admin.person.corporation' | translate }}</mat-label>
+                        <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                            [formControl]="corporationControl" [matAutocomplete]="autoCorporation"
+                            [value]="selectedCorporationName" autocomplete="off" />
+                        <mat-icon matPrefix>
+                            <i-tabler name="building-skyscraper" class="icon-20 d-flex"></i-tabler>
+                        </mat-icon>
+                        <mat-autocomplete #autoCorporation="matAutocomplete"
+                            (optionSelected)="resetAutocompleteCorporation()">
+                            <mat-option *ngFor="let corporation of filteredOptionsCorporation | async "
+                                [value]="corporation.idcorporacion"
+                                (onSelectionChange)="selectOptionCorporation(corporation)">
+                                {{ corporation.nombrecorporacion }} 
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                </div>
+                <div class="col-sm-3">
+
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>{{ 'admin.department.branch' | translate }}</mat-label>
+                        <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                            [formControl]="branchControl" [matAutocomplete]="autoBranch" [value]="selectedBranchName"
+                            autocomplete="off" />
+                        <mat-icon matPrefix>
+                            <i-tabler name="building-community" class="icon-20 d-flex"></i-tabler>
+                        </mat-icon>
+                        <mat-autocomplete #autoBranch="matAutocomplete" (optionSelected)="resetAutocompleteBranch()">
+                            <mat-option *ngFor="let branch of filteredOptionsBranch | async " [value]="branch.idsucursal"
+                                (onSelectionChange)="selectOptionBranch(branch)">
+                                {{ branch.nombresucursal }} 
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>{{ 'admin.department.Department' | translate }}</mat-label>
+                        <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                            [formControl]="departmentControl" [matAutocomplete]="autoDepartment"
+                            [value]="selectedDepartmentName" autocomplete="off" />
+                        <mat-icon matPrefix>
+                            <i-tabler name="building" class="icon-20 d-flex"></i-tabler>
+                        </mat-icon>
+                        <mat-autocomplete #autoDepartment="matAutocomplete"
+                            (optionSelected)="resetAutocompleteDepartment()">
+                            <mat-option *ngFor="let department of filteredOptionsDepartment | async"
+                                [value]="department.idsucursal" (onSelectionChange)="selectOptionDepartment(department)">
+                                {{ department.nombredepartamento }} 
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-3">
+
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>{{ 'admin.person.role' | translate }}</mat-label>
+                        <input type="text" placeholder="Seleccione una opción" aria-label="Number" matInput
+                            [formControl]="roleControl" [matAutocomplete]="autoRole" [value]="selectedRoleName"
+                            autocomplete="off" />
+                        <mat-icon matPrefix>
+                            <i-tabler name="user-search" class="icon-20 d-flex"></i-tabler>
+                        </mat-icon>
+                        <mat-autocomplete #autoRole="matAutocomplete">
+                            <mat-option *ngFor="let role of filteredOptionsRole | async" [value]="role.idrol"
+                                (onSelectionChange)="selectOptionRole(role)">
+                                {{ role.nombrerol }} 
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row m-y-24 p-t-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-select placeholder="Seleccione un tipo de documento"
+                            (selectionChange)="cambiarMaxlengthDni()" [(ngModel)]="local_data.idtipoidentificacion" name="idtipoidentificacion">
+                            <mat-option *ngFor="let dniType of localDnitypesData" [value]="dniType.idtipoidentificacion">
+                                {{ dniType.descripciontipoidentificacion }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.dni' | translate}}</mat-label>
+                        <input [maxlength]="maxDniLength" matInput placeholder="{{'admin.person.dni' | translate}}"
+                            name="identificacion" [(ngModel)]="local_data.identificacion" />
+                    </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.name' | translate}}</mat-label>
+                        <input matInput placeholder="{{'admin.person.name' | translate}}" name="first_name"
+                            [(ngModel)]="local_data.first_name" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.last_name' | translate}}</mat-label>
+                        <input matInput placeholder="{{'admin.person.last_name' | translate}}" name="last_name"
+                            [(ngModel)]="local_data.last_name" />
+                    </mat-form-field>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-select placeholder="Seleccione un género" [(ngModel)]="local_data.idgenero" name="gender">
+                            <mat-option *ngFor="let gender of localGenderData" [value]="gender.idgenero">
+                                {{ gender.descripciongenero }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.email' | translate}}</mat-label>
+                        <input matInput placeholder="{{'admin.person.email' | translate}}" name="email"
+                            [(ngModel)]="local_data.email" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.username' | translate}}</mat-label>
+                        <input [maxLength]="10" matInput placeholder="{{'admin.person.username' | translate}}" name="username"
+                            [(ngModel)]="local_data.username" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+
+                    <mat-form-field appearance="outline" class="w-100">
+                        <input matInput placeholder="{{'admin.person.pass' | translate}}" name="password"
+                        [(ngModel)]="password" [type]="alignhide ? 'password' : 'text'" />
+                        <button mat-icon-button matSuffix (click)="alignhide = !alignhide"
+                            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="alignhide">
+                            <mat-icon class="op-5">{{
+                                alignhide ? "visibility_off" : "visibility"
+                                }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+                
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.cellphone' | translate}}</mat-label>
+                        <input [maxLength]="10" matInput placeholder="{{'admin.person.cellphone' | translate}}" name="cellphone"
+                            [(ngModel)]="local_data.celular" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.phone' | translate}}</mat-label>
+                        <input [maxLength]="9" matInput placeholder="{{'admin.person.phone' | translate}}" name="phone"
+                            [(ngModel)]="local_data.telefono" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{'admin.person.address' | translate}}</mat-label>
+                        <input [maxLength]="500" matInput placeholder="{{'admin.person.address' | translate}}" name="direccion"
+                            [(ngModel)]="local_data.direccion" />
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <div class="col-lg-12 m-l-8">
+                <mat-slide-toggle id="is_active" name="is_active" [(ngModel)]="local_data.is_active">{{ local_data.is_active ?
+                    'Activado' : 'Desactivado' }}</mat-slide-toggle>
+            </div>
+            <br>
+        </form>
+
+    </mat-card-content>
+</mat-card>

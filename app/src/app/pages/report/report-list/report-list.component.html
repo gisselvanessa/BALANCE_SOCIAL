@@ -1,0 +1,50 @@
+
+<div class="loading-overlay" *ngIf="loading">
+  <div class="loading-indicator">
+    <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+    <p>Cargando...</p>
+  </div>
+</div>
+<mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+      <div class="row ">
+         
+         
+
+        <div class="col-lg-12 d-flex align-items-center justify-content-end">
+          <a  mat-raised-button color="warning"  (click)="openDialog('Cerrar Reporte', local_data_Report)"
+          class="m-r-10">Cerrar Reporte</a>
+            <a [disabled]="complete_principles.length === 0" mat-raised-button color="primary" (click)="openDialog('Generar Reporte', local_data_Report)"
+            class="m-r-10">Generar Reporte</a>
+           
+  
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+
+  <mat-card-content class="p-y-24 ">
+    <div class="row" style="max-width: 1200px; margin: 0 auto;">
+        <div class="col-sm-6" *ngFor="let principle of local_data_Principles">
+          <mat-card (click)="goPrinciple(principle)" class="cardWithShadow cursor-pointer" [ngClass]="principle.in_report ? 'bg-light-success text-success' :'bg-light-accent text-accent'">
+            <mat-card-content class="p-y-24">
+              <div class="d-flex justify-content-between align-items-center">
+                <mat-card-title>{{ principle.codigoprincipio  }}</mat-card-title>
+
+                <div>
+                   
+                </div>
+                
+              </div>
+              <mat-card-title >{{ principle.descripcionprincipio }}</mat-card-title>
+
+              <div>
+
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+      
+</mat-card-content>

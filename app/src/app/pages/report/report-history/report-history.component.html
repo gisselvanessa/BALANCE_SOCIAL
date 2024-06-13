@@ -1,0 +1,62 @@
+
+<div class="loading-overlay" *ngIf="loading">
+    <div class="loading-indicator">
+      <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+      <p>Cargando...</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-lg-4" *ngFor="let element of local_data">
+      <mat-card class="cardWithShadow overflow-hidden">
+        <mat-card-header
+          class="element-header p-10 bg-light-primary d-flex justify-content-between "
+        >
+          <mat-card-title class="m-b-0 f-s-16">
+            {{ element.titulo }}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class=" p-y-24">
+            <div class="m-b-10">
+                <h3 class="m-b-4 mat-subtitle-2 f-s-16 f-w-600">
+                    Fecha Creación
+                  </h3>
+                  <span class="f-s-12">{{ element.fechacreacion | date:'yyyy-MM-dd HH:mm'}}</span>
+            </div>
+            <div class="m-b-10">
+                <h3 class="m-b-4 mat-subtitle-2 f-s-16 f-w-600">
+                    Fecha Modificación
+                  </h3>
+                  <span class="f-s-12">{{ element.fechamodificacion | date:'yyyy-MM-dd HH:mm'}}</span>
+            </div>
+            <div class="m-b-10">
+                <h3 class="m-b-4 mat-subtitle-2 f-s-16 f-w-600">
+                    Categoria
+                  </h3>
+                  <span class="f-s-12">{{ element.categoria}}</span>
+            </div>
+            <div class="">
+              <h3 class="m-b-4 mat-subtitle-2 f-s-16 f-w-600">
+                  Estado
+                </h3>
+                <span class="rounded f-w-600 p-6 p-y-4 f-s-12" [ngClass]="element.status ? 'bg-light-success text-success' : 'bg-light-error text-error'">
+                  {{ element.status ? 'Activo' : 'Inactivo' }} <!--| date : "fullDate"-->
+                </span>
+          </div>
+          
+          
+          
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions class="text-center p-y-8" >
+          <!-- <button mat-button>Start</button> -->
+          <a [disabled]="!element.principiosincluidos"
+            mat-button
+            (click)="verReporte(element)"
+            class="w-100"
+          >
+            Ver Reporte
+          </a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>

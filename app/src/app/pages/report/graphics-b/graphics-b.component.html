@@ -1,0 +1,66 @@
+<mat-card class="cardWithShadow">
+    <mat-card-header class="d-flex">
+        <div class="m-r-auto">
+            <mat-card-title>Resultados</mat-card-title>
+            <mat-card-subtitle class="mat-body-1"></mat-card-subtitle>
+        </div>
+        <div class="d-flex" >
+            <button mat-stroked-button color="warn" class="w-100 btn-block m-r-16" (click)="backPrinciple()" >
+                Regresar
+              </button>
+          
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+        
+    </mat-card-content>
+</mat-card>
+
+<h2>{{local_data && local_data.codigoindicador && local_data.descripcionindicador ? local_data.codigoindicador + ' - ' + local_data.descripcionindicador : ''}}</h2>
+
+<div class="row">
+    <div *ngFor="let topcard of topcards2; let first = first" [ngClass]="{'col-lg-12': first, 'col-lg-6': !first, 'col-sm-6': !first, 'col-6': !first}">
+        <mat-card class="shadow-none text-center bg-light-{{ topcard.color }}  shadow-none">
+            <mat-card-content class="p-16">
+                <img [src]="topcard.img" alt="users" width="40" class="rounded-circle" />
+                <h4 class="mat-subtitle-2 f-w-600 text-{{ topcard.color }} m-t-8">
+                    {{ topcard.title }}
+                </h4>
+                <h6 class="m-t-4 mat-subtitle-1 f-w-600 text-{{ topcard.color }} m-t-8">
+                    {{ topcard.subtitle }}
+                </h6>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12" >
+
+        <div class="row ">
+           
+            <div class="col-lg-12">
+                <mat-card class="cardWithShadow theme-card mat-card-sm mat-card-lg">
+                    <mat-card-header class="d-flex justify-content-between align-items-center"> 
+                        <mat-card-title class="m-b-0">Comentarios</mat-card-title>
+                        <mat-card-subtitle class="mat-body-1">Observaciones que se agregarán al informe final de Balance Social.</mat-card-subtitle>
+
+                    </mat-card-header>
+                    <mat-card-content class="b-t-1">
+                        <mat-form-field appearance="outline" [style]="{'width': '100%'}">
+                            <textarea [disabled]="loading2" rows="5" matInput [(ngModel)]="local_data.commentario" name="commentario" placeholder=""></textarea>
+                            <!-- <mat-hint align="end">{{comment2.length}}/300</mat-hint> -->
+                        </mat-form-field>
+                      
+                        <button [disabled]="loading2"  mat-flat-button  color="primary" (click)="saveDataGraph()" >
+                            Guardar
+                          </button >
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+
+    </div>
+    <mat-card></mat-card>
+</div>

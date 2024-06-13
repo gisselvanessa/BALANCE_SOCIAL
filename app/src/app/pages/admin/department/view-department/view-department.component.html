@@ -1,0 +1,82 @@
+<div class="loading-overlay" *ngIf="loading">
+    <div class="loading-indicator">
+      <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+      <p>Cargando...</p>
+    </div>
+  </div>
+  
+  
+  
+  <mat-card class="cardWithShadow">
+  
+    <mat-card-content class="p-24">
+      <span>
+        <div class="row m-b-24">
+          <div class="col-sm-4 d-flex align-items-center">
+            <h4 class="mat-subtitle-2 f-s-18 f-w-600">#{{local_data.iddepartamento}}</h4>
+                <span style="margin-left: 1rem;" class="rounded f-w-600 p-6 p-y-4 f-s-12" [ngClass]="local_data.status ? 'bg-light-primary text-primary' : 'bg-light-error text-error'">
+                  {{ local_data.status ? 'Activo' : 'Inactivo' }} <!--| date : "fullDate"-->
+                </span>
+          </div>
+          <div class="col-sm-8 text-right">
+            <a routerLink="/admin/department" mat-stroked-button color="primary"
+              class="m-r-10">{{'admin.department.back' | translate}}</a>
+    
+            <a [routerLink]="['/admin/department-edit', id]" mat-flat-button color="primary">{{'admin.department.edit' |
+              translate}}</a>
+          </div>
+        </div>
+      </span>
+      <mat-divider></mat-divider>
+      <br>
+      <h1 class="custom-padding">{{ local_data.nombredepartamento }}</h1>
+      <div class="row m-y-24 p-t-24 custom-padding">
+  
+        <div class="col-sm-4">
+          <div class="w-100">
+            <h3>{{ 'admin.department.Corporation' | translate }}</h3>
+            <p>{{ local_data.nombrecorporacion}}</p>
+          </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="w-100">
+              <h3>{{ 'admin.department.branch' | translate }}</h3>
+              <p>{{ local_data.nombresucursal }}</p>
+            </div>
+          </div>
+        
+        <div class="col-sm-4">
+            <div class="w-100">
+              <h3>{{ 'admin.department.country/city' | translate }}</h3>
+              <p>{{ local_data.nombregeografiacompleta}}</p>
+            </div>
+          </div>
+
+        
+
+        <div class="col-sm-12">
+            <div class="w-100">
+              <h3>{{ 'admin.department.description' | translate }}</h3>
+              <p>{{ local_data.descripciondepartamento }}</p>
+            </div>
+          </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="row m-y-24 custom-padding">
+
+        <div class="col-sm-6">
+          <div class="w-100">
+            <h3>{{ 'admin.department.date_register' | translate }}</h3>
+            <p>{{ local_data.fechacreacion | date: 'MM/dd/yyyy' }}</p>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="w-100">
+            <h3>{{ 'admin.department.date_modify' | translate }}</h3>
+            <p>{{ local_data.fechamodificacion | date: 'MM/dd/yyyy' }}</p>
+          </div>
+        </div>
+  
+      </div>
+    </mat-card-content>
+  </mat-card>

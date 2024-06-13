@@ -1,0 +1,49 @@
+
+
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row justify-content-between">
+      <div class="col-lg-4">
+    
+      </div>
+      <div class="col-lg-4 d-flex align-items-center justify-content-end">
+        <div class="buttons_right">
+
+          <a (click)="backPrincipleList()" mat-stroked-button color="primary"
+            class="m-r-10">{{'admin.principles.back' | translate}}</a>
+        </div>
+
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card-content class="p-y-24 ">
+    <div class="row" style="max-width: 1200px; margin: 0 auto;">
+        <div class="col-sm-6" *ngFor="let principle of local_data">
+          <mat-card (click)="goPrinciple(principle)" class="cardWithShadow cursor-pointer" [ngClass]="principle.in_report ? 'bg-light-success text-success' :'bg-light-accent text-accent'">
+            <mat-card-content class="p-y-24">
+              <div class="d-flex justify-content-between align-items-center">
+                <mat-card-title>{{ principle.codigoprincipio  }}</mat-card-title>
+
+                <div>
+                    <!-- <button (click)="editPrinciple(principle)" mat-mini-fab class="text-accent bg-light-accent shadow-none">
+                        <i class="material-icons">edit</i>
+                      </button> -->
+                      <!-- <button (click)="editPrinciple(principle)" mat-mini-fab class="text-accent bg-light-accent shadow-none">
+                          <i class="material-icons">edit</i>
+                        </button> -->
+                </div>
+                
+              </div>
+              <mat-card-title >{{ principle.descripcionprincipio }}</mat-card-title>
+
+              <div>
+
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+      
+</mat-card-content>

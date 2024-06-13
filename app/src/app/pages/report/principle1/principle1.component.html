@@ -1,0 +1,223 @@
+
+<div class="loading-overlay" *ngIf="loading">
+  <div class="loading-indicator">
+    <mat-spinner class="loading-spinner" diameter="32"></mat-spinner>
+    <p>Cargando...</p>
+  </div>
+</div>
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row justify-content-between">
+      <div class="col-lg-4">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-label>{{'admin.principles.SearchIndicator' | translate}}</mat-label>
+
+          <input matInput [(ngModel)]="searchText" (keyup)="applyFilter()" />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4 d-flex align-items-center justify-content-end">
+        <div class="buttons_right">
+
+          <a (click)="backPrincipleList()" mat-stroked-button color="primary"
+            class="m-r-10">{{'admin.principles.back' | translate}}</a>
+        </div>
+
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+
+<!-- Accordion -->
+
+<h2 >
+  {{principle_title}}
+</h2>
+
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let clasificacion of dataSource.data" class="cardWithShadow"
+    [expanded]="step === clasificacion.idclasificacion"
+    (opened)="setStep(clasificacion.idclasificacion)"
+    (closed)="panelOpenState = false"
+    hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title class="f-w-600 f-s-16">
+          {{ clasificacion.descripcionclasificacion }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="table-responsive" >
+        <table mat-table [dataSource]="clasificacion.data" class="w-100">
+          <ng-container matColumnDef="is_complete">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600"></th>
+            <td mat-cell *matCellDef="let element" class="f-w-600 mat-subtitle-1 f-s-16 m-t-0">
+              <i-tabler *ngIf="element.is_complete" name="circle-check-filled" class="icon-18 text-success"></i-tabler>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="codigoindicador" >
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">#</th>
+            <td mat-cell *matCellDef="let element" class="f-w-600 mat-subtitle-1 f-s-16 m-t-0">{{ element.codigoindicador
+              }}</td>
+          </ng-container>
+  
+          <!-- <ng-container matColumnDef="descripcioncaracteristica">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              {{'admin.principles.feature' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14">
+              {{ element.descripcioncaracteristica }}
+            </td>
+          </ng-container> -->
+  
+          <ng-container matColumnDef="descripcionindicador">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 " [style]="{width: '300px'}">
+              {{'admin.principles.description' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14 " [style]="{width: '300px'}">
+              {{ element.descripcionindicador }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="valor_numerador">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 " [style]="{width: '300px'}">
+              {{'admin.principles.currentValue1' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14 " [style]="{width: '300px'}">
+              {{ element.valor_numerador }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="valor_denominador">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 " [style]="{width: '300px'}">
+              {{'admin.principles.currentValue2' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14 " [style]="{width: '300px'}">
+              {{ element.valor_denominador }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              {{'admin.principles.status' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14">
+              <span class="rounded f-w-600 p-6 p-y-4 f-s-12" [ngClass]="{
+                  'bg-light-primary text-primary': element.status && element.is_applicable,
+                  'bg-light-error text-error': !element.status && element.is_applicable,
+                  'bg-light-warning text-warning': !element.is_applicable
+                }">
+                {{ element.status ? 'Activo' : 'Inactivo' }}/ <!--| date : "fullDate"-->
+                {{ element.is_applicable ? 'Aplica' : 'No Aplica' }} <!--| date : "fullDate"-->
+              </span>
+            </td>
+  
+          </ng-container>
+  
+          <ng-container matColumnDef="value1">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              {{'admin.principles.numerator' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14">
+              <div *ngIf="element.operacion =='División' || element.operacion =='Igual' || element.operacion =='División - 1'">
+                <mat-form-field appearance="outline" class="hide-hint" [style]="{'width': 'auto'}">
+                  <input [disabled]="element.saveValuesButton" type="text" (input)="onInputValue1($event,element)" (keyup.enter)="onEnterPressed(element)" matInput
+                    matTooltip="{{element.variables[0]}}" [(ngModel)]="element.numerador"
+                    placeholder="{{element.variables[0]}}" [disabled]="!element.is_applicable" />
+                </mat-form-field>
+              </div>
+              <div *ngIf="element.operacion =='Cumplimiento'">
+  
+                <!-- Aquí puedes poner el código para un select de solo si o no -->
+                <mat-form-field appearance="outline" class="hide-hint" [style]="{'width': 'auto'}">
+                  <mat-select [disabled]="element.saveValuesButton" matTooltip="{{element.variables[0]}}" (selectionChange)="onChange(element)" (keyup.enter)="onEnterPressed(element)" [(ngModel)]="element.selection"
+                    placeholder="{{element.variables[0]}}">
+                    <mat-option value="Si">Si</mat-option>
+                    <mat-option value="No">No</mat-option>
+                  </mat-select>
+                </mat-form-field>
+  
+              </div>
+
+              <div *ngIf="element.operacion =='Texto'">
+  
+                <!-- Aquí puedes poner el código para un select de solo si o no -->
+                <mat-form-field appearance="outline"  [style]="{'width': 'auto'}">
+                  <textarea [disabled]="element.saveValuesButton" rows="5" matInput maxlength="300"    (input)="onInputValueText($event,element)" (keyup.enter)="onEnterPressed(element)"
+                    matTooltip="{{element.variables[0]}}" [(ngModel)]="element.numerador"
+                    placeholder="{{element.variables[0]}}" [disabled]="!element.is_applicable" ></textarea>
+                    <mat-hint>Escribir "No" si no existe. {{element.numerador?element.numerador.length:0}} / 300</mat-hint>
+                </mat-form-field>
+  
+              </div>
+
+              <div *ngIf="element.operacion =='Selección'">
+  
+                <!-- Aquí puedes poner el código para un select de solo si o no -->
+                <mat-form-field appearance="outline" class="hide-hint" [style]="{'width': 'auto'}">
+                  <mat-select [disabled]="element.saveValuesButton" matTooltip="{{element.variables[0]}}" (selectionChange)="onChange(element)" (keyup.enter)="onEnterPressed(element)" [(ngModel)]="element.numerador"
+                    placeholder="{{element.variables[0]}}">
+                    <mat-option value="Diaria">Diaria</mat-option>
+                    <mat-option value="Mensual">Mensual</mat-option>
+                    <mat-option value="Trimestral">Trimestral</mat-option>
+                    <mat-option value="Semanal">Semanal</mat-option>
+                    <mat-option value="Anual">Anual</mat-option>
+                    <mat-option value="No">No</mat-option>
+                  </mat-select>
+                </mat-form-field>
+  
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="value2">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              {{'admin.principles.denominator' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="f-s-14">
+              <div *ngIf="element.operacion =='División' || element.operacion =='División - 1'">
+                <mat-form-field appearance="outline" class="hide-hint" [style]="{'width': 'auto'}">
+                  <input [disabled]="element.saveValuesButton" type="text" (input)="onInputValue2($event,element)" (keyup.enter)="onEnterPressed(element)" matInput [disabled]="!element.is_applicable"
+                    matTooltip="{{element.variables[1]}}" [(ngModel)]="element.denominador"
+                    placeholder="{{element.variables[1]}}" />
+                </mat-form-field>
+              </div>
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              {{'admin.principles.action' | translate}}
+            </th>
+            <td mat-cell *matCellDef="let element" class="action-link">
+              <a (click)="saveValues(element)" class="m-r-10 cursor-pointer" [ngClass]="{'disabled-button':  (element.is_applicable === false) || element.saveValuesButton,'text-success': (element.operacion === 'División' && element.valor_numerador && element.valor_denominador) || (element.operacion !== 'División' && element.valor_numerador),
+                     'text-error': element.denominadorFilled || element.numeradorFilled }">
+                <i-tabler name="reload" class="icon-18"></i-tabler>
+              </a>
+  
+              <a (click)="openDialog('Save',element)" class="m-r-10 cursor-pointer" [ngClass]="{'text-success':element.meta}">
+                <i-tabler name="trending-up" class="icon-18"></i-tabler>
+              </a>
+  
+              <a (click)="generateResults(element)" class="m-r-10 cursor-pointer"
+                [ngClass]="{'disabled-button':  (element.is_applicable === null), 'text-success':element.is_complete===true}">
+                <i-tabler name="puzzle" class="icon-18"></i-tabler>
+              </a>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+          <!-- <mat-paginator [length]="clasificacion.data.length"  [hidePageSize]="true" [pageSizeOptions]="[]" [showFirstLastButtons]="false" 
+          (page)="onPageChanged($event)"></mat-paginator> -->
+      </div>
+  
+      <mat-action-row >
+        <button *ngIf="dataSource.data.length > 1 && step !== dataSource.data[0].idclasificacion" mat-flat-button color="warn" (click)="prevStep()">Anterior</button>
+        <button *ngIf="dataSource.data.length > 1 && step !== dataSource.data[dataSource.data.length - 1].idclasificacion" mat-flat-button color="primary" (click)="nextStep()">Siguiente</button>
+        <button *ngIf="step === dataSource.data[dataSource.data.length - 1].idclasificacion" mat-flat-button color="primary" (click)="saveReport()" >Guardar</button>
+      </mat-action-row>
+      
+    </mat-expansion-panel>
+  </mat-accordion>
+  

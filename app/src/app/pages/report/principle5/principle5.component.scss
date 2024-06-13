@@ -1,0 +1,48 @@
+/* CSS para bloquear toda la pantalla */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+    z-index: 9999; /* Asegura que esté en la parte superior */
+  }
+  
+  .loading-indicator {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  .loading-spinner {
+    display: inline-block;
+  }
+
+  .buttons_right{
+    display: flex;
+    gap: 0.5rem;
+  }
+  .mat-column-descripcionindicador {
+    min-width: 250px;
+    overflow: visible;
+    white-space: normal;
+  }
+  .mat-column-descripcioncaracteristica {
+    min-width: 300px;
+    overflow: visible;
+    white-space: normal;
+  }
+  .mat-column-valor_numerador {
+    max-width: 300px;
+    overflow: visible;
+    white-space: normal;
+  }
+  .disabled-button {
+    pointer-events: none; /* Esto desactivará los eventos del mouse en el botón */
+    opacity: 0.4; /* Puedes ajustar la opacidad o agregar otros estilos según tus necesidades */
+  }
